@@ -1,14 +1,12 @@
-from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
 
 if __name__ == "__main__":
-    print("Testing current directory:")
-    print(get_files_info("calculator", "."))
 
-    print("\nTesting pkg directory:")
-    print(get_files_info("calculator", "pkg"))
-
-    print("\nTesting /bin directory:")
-    print(get_files_info("calculator", "/bin"))
-
-    print("\nTesting parent directory:")
-    print(get_files_info("calculator", "../"))
+    print("Testing main.py:")
+    print(get_file_content("calculator", "main.py"))
+    
+    print("\nTesting pkg/calculator.py:")
+    print(get_file_content("calculator", "pkg/calculator.py"))
+    
+    print("\nTesting /bin/cat (should return error):")
+    print(get_file_content("calculator", "/bin/cat"))
