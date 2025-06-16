@@ -1,11 +1,18 @@
-from functions.write_file import write_file
+from functions.run_python import run_python_file
+
 
 if __name__ == "__main__":
-    print("Testing write to lorem.txt:")
-    print(write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum"))
+    print("Test 1: Running calculator/main.py")
+    print(run_python_file("calculator", "main.py"))
+    print("\n" + "-" * 50 + "\n")
 
-    print("\nTesting write to pkg/morelorem.txt:")
-    print(write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"))
+    print("Test 2: Running calculator/tests.py")
+    print(run_python_file("calculator", "tests.py"))
+    print("\n" + "-" * 50 + "\n")
 
-    print("\nTesting write to /tmp/temp.txt (should return error):")
-    print(write_file("calculator", "/tmp/temp.txt", "this should not be allowed"))
+    print("Test 3: Attempting to run file outside working directory")
+    print(run_python_file("calculator", "../main.py"))
+    print("\n" + "-" * 50 + "\n")
+
+    print("Test 4: Attempting to run non-existent file")
+    print(run_python_file("calculator", "nonexistent.py"))
