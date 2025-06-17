@@ -4,6 +4,9 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
+from schemas import get_schemas
+from utils import generate_content
+
 
 def main():
     load_dotenv()
@@ -12,6 +15,16 @@ def main():
 
     # Get all arguments after the script name
     args = sys.argv[1:]
+
+    system_prompt = """
+You are a helpful AI coding agent.
+
+When a user asks a question or makes a request, make a function call plan. You can perform the following operations:
+
+- List files and directories
+
+All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
+"""
 
     if not args:
         print("Error: Please provide a prompt!")
@@ -22,24 +35,16 @@ def main():
         args.remove("--verbose")
 
     user_prompt = " ".join(args)
-    
+
     model = "gemini-2.0-flash-001"
     messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
     ]
-    generate_content(client, model, messages, verbose)
 
+    # Get all available function declarations
+    available_functions = get_schemas()
 
-def generate_content(client, model, messages, verbose):
-    response = client.models.generate_content(model=model, contents=messages)
-
-    print(response.text)
-
-    if verbose:
-        print("\nDebug information:")
-        print("User prompt:", messages[0].parts[0].text)
-        print("Prompt tokens:", response.usage_metadata.prompt_token_count)
-        print("Response tokens:", response.usage_metadata.candidates_token_count)
+    generate_content(client, model, messages, verbose, system_prompt, available_functions)
 
 
 if __name__ == "__main__":
