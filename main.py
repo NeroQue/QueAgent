@@ -16,6 +16,7 @@ def main():
     # Get all arguments after the script name
     args = sys.argv[1:]
 
+    # Define the system prompt that guides the AI agent's behavior
     system_prompt = """
 You are a helpful AI coding agent.
 
@@ -37,6 +38,7 @@ All paths you provide should be relative to the working directory. You do not ne
     if verbose:
         args.remove("--verbose")
 
+    # Join all remaining arguments as the user prompt
     user_prompt = " ".join(args)
 
     model = "gemini-2.0-flash-001"
@@ -44,9 +46,10 @@ All paths you provide should be relative to the working directory. You do not ne
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
     ]
 
-    # Get all available function declarations
+    # Get all available function declarations for the agent
     available_functions = get_schemas()
 
+    # Start the agent loop
     generate_content(client, model, messages, verbose, system_prompt, available_functions)
 
 
