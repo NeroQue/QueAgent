@@ -1,4 +1,5 @@
 from google.genai import types
+from functions.call_function import call_function
 
 def generate_content(client, model, messages, verbose, system_prompt, available_functions):
     """Generate content using the Gemini API"""
@@ -16,7 +17,19 @@ def generate_content(client, model, messages, verbose, system_prompt, available_
 
     if response.function_calls:
         for function_call_part in response.function_calls:
-            print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+            function_call_result = call_function(function_call_part, verbose)
+            
+            if not hasattr(function_call_result, 'parts') or not function_call_result.parts:
+                raise RuntimeError("Function call result missing parts")
+            
+            if not hasattr(function_call_result.parts[0], 'function_response'):
+                raise RuntimeError("Function call result missing function_response")
+            
+            if not hasattr(function_call_result.parts[0].function_response, 'response'):
+                raise RuntimeError("Function call result missing response")
+            
+            if verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
     else:
         print(response.text)
 
